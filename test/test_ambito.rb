@@ -19,8 +19,8 @@ class TestAmbito < Minitest::Test
   def test_that_it_returns_a_formatted_string
     assert_equal <<~OUTPUT.chomp, Ambito.run.join("\n")
       Oficial: $ 363.71 📈 0.58%
-      Informal: $ 1050.00 📈 13.16%
-      MEP: $ 930.44 📈 6.60%
+      Informal: $ 1050.00 📊 0.00%
+      MEP: $ 930.44 📉 -6.60%
     OUTPUT
   end
 end

@@ -12,7 +12,7 @@ module TestStubs
         .to_return_json(body: {
           compra: "1025,00",
           venta: "1075,00",
-          variacion: "13,16%"
+          variacion: "0,00%"
         })
 
       stub_request(:get, "https://mercados.ambito.com/dolarrava/mep/variacion")
@@ -21,7 +21,7 @@ module TestStubs
           venta: "930,44",
           ultimo: "872,61",
           valor: "930,44",
-          variacion: "6,60%"
+          variacion: "-6,60%"
         })
     end
   end
