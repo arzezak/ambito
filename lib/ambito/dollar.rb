@@ -1,6 +1,6 @@
 module Ambito
   class Dollar
-    EMOJI = {up: "📈", down: "📉", equal: "📊"}.freeze
+    TRENDS = {up: "📈", down: "📉", equal: "📊"}.freeze
     TYPES = {oficial: "Oficial", informal: "Informal", mep: "MEP"}.freeze
 
     def initialize(buy:, sell:, type:, variation:)
@@ -24,11 +24,11 @@ module Ambito
 
     def emoji
       if variation.positive?
-        EMOJI[:up]
+        TRENDS[:up]
       elsif variation.negative?
-        EMOJI[:down]
+        TRENDS[:down]
       else
-        EMOJI[:equal]
+        TRENDS[:equal]
       end
     end
 
