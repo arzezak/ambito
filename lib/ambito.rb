@@ -2,6 +2,7 @@
 
 require "net/http"
 require "json"
+require_relative "ambito/cli"
 require_relative "ambito/dollar"
 require_relative "ambito/version"
 
