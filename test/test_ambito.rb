@@ -11,9 +11,7 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_returns_rates
-    Ambito.run.each do |rate|
-      assert_kind_of Numeric, rate.average
-    end
+    assert_kind_of Numeric, Ambito.oficial.average
   end
 
   def test_that_it_returns_a_formatted_string
@@ -22,5 +20,17 @@ class TestAmbito < Minitest::Test
       Informal: $ 1050.00 📊 0.00%
       MEP: $ 930.44 📉 -6.60%
     OUTPUT
+  end
+
+  def test_that_it_includes_emoji_reflecting_upward_trends
+    assert_includes Ambito.oficial.to_s, "📈"
+  end
+
+  def test_that_it_includes_emoji_reflecting_downward_trends
+    assert_includes Ambito.mep.to_s, "📉"
+  end
+
+  def test_that_it_includes_emoji_reflecting_stable_trends
+    assert_includes Ambito.informal.to_s, "📊"
   end
 end
