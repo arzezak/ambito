@@ -1,7 +1,7 @@
 module Ambito
   class CLI
     def run
-      puts Ambito.fetch
+      puts Ambito.run
     end
   end
 end

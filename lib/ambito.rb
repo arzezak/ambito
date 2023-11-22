@@ -16,7 +16,7 @@ module Ambito
   ].freeze
 
   class << self
-    def fetch
+    def run
       DOLLARS.map do |dollar|
         res = JSON.parse(Net::HTTP.get(uri(dollar)))
         type = dollar.split("/").last
