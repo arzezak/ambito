@@ -2,44 +2,33 @@
 
 require "net/http"
 require "json"
+require "yaml"
 require_relative "ambito/cli"
 require_relative "ambito/dollar"
+require_relative "ambito/rate"
 require_relative "ambito/version"
 
 module Ambito
   class Error < StandardError; end
 
-  DOLLARS = %w[
-    dolar/oficial
-    dolar/informal
-    dolarrava/mep
-  ].freeze
+  BASE_URL = "https://mercados.ambito.com"
+  RATES = YAML.safe_load_file("./config/rates.yml", permitted_classes: [Ambito::Rate])
 
   class << self
-    def run
-      DOLLARS.map do |dollar|
-        res = JSON.parse(Net::HTTP.get(uri(dollar)))
-        type = dollar.split("/").last
-        buy, sell, variation = res.values_at("compra", "venta", "variacion")
-        Dollar.new(type:, buy:, sell:, variation:)
-      end
-    end
+    def run(rate: nil)
+      scope = Array(RATES.detect { _1.name == rate } || RATES)
 
-    DOLLARS.each do |dollar|
-      type = dollar.split("/").last
-
-      define_method(type) do
-        res = JSON.parse(Net::HTTP.get(uri(dollar)))
-        type = dollar.split("/").last
+      scope.map do |rate|
+        res = JSON.parse(Net::HTTP.get(uri(rate.endpoint)))
         buy, sell, variation = res.values_at("compra", "venta", "variacion")
-        Dollar.new(type:, buy:, sell:, variation:)
+        Dollar.new(rate: rate, buy:, sell:, variation:)
       end
     end
 
     private
 
-    def uri(dollar)
-      URI("https://mercados.ambito.com/#{dollar}/variacion")
+    def uri(endpoint)
+      URI.join(BASE_URL, endpoint)
     end
   end
 end

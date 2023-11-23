@@ -11,7 +11,9 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_returns_rates
-    assert_kind_of Numeric, Ambito.oficial.average
+    Ambito.run.each do |dollar|
+      assert_kind_of Ambito::Dollar, dollar
+    end
   end
 
   def test_that_it_returns_a_formatted_string
@@ -23,14 +25,14 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_includes_emoji_reflecting_upward_trends
-    assert_includes Ambito.oficial.to_s, "📈"
+    assert_includes Ambito.run(rate: "oficial").join, "📈"
   end
 
   def test_that_it_includes_emoji_reflecting_downward_trends
-    assert_includes Ambito.mep.to_s, "📉"
+    assert_includes Ambito.run(rate: "mep").join, "📉"
   end
 
   def test_that_it_includes_emoji_reflecting_stable_trends
-    assert_includes Ambito.informal.to_s, "📊"
+    assert_includes Ambito.run(rate: "informal").join, "📊"
   end
 end

@@ -1,12 +1,11 @@
 module Ambito
   class Dollar
     TRENDS = {up: "📈", down: "📉", equal: "📊"}.freeze
-    TYPES = {oficial: "Oficial", informal: "Informal", mep: "MEP"}.freeze
 
-    def initialize(buy:, sell:, type:, variation:)
+    def initialize(rate:, buy:, sell:, variation:)
+      @rate = rate
       @buy = float(buy)
       @sell = float(sell)
-      @type = TYPES.fetch(type.to_sym)
       @variation = float(variation)
     end
 
@@ -15,14 +14,14 @@ module Ambito
     end
 
     def to_s
-      "#{type}: $ #{format(average)} #{emoji} #{format(variation)}%"
+      "#{rate.display}: $ #{format(average)} #{trend} #{format(variation)}%"
     end
 
     private
 
-    attr_reader :buy, :sell, :type, :variation
+    attr_reader :rate, :buy, :sell, :variation
 
-    def emoji
+    def trend
       if variation.positive?
         TRENDS[:up]
       elsif variation.negative?

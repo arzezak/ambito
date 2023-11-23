@@ -1,0 +1,12 @@
+- !ruby/object:Ambito::Rate
+  name: oficial
+  display: Oficial
+  endpoint: /dolar/oficial/variacion
+- !ruby/object:Ambito::Rate
+  name: informal
+  display: Informal
+  endpoint: /dolar/informal/variacion
+- !ruby/object:Ambito::Rate
+  name: mep
+  display: MEP
+  endpoint: /dolarrava/mep/variacion
