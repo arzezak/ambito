@@ -12,16 +12,16 @@ module Ambito
   class Error < StandardError; end
 
   BASE_URL = "https://mercados.ambito.com"
-  RATES = YAML.safe_load_file("./config/rates.yml", permitted_classes: [Ambito::Rate])
+  DOLLARS = YAML.safe_load_file("./config/dollars.yml", permitted_classes: [Ambito::Dollar])
 
   class << self
-    def run(rate: nil)
-      scope = Array(RATES.detect { _1.name == rate } || RATES)
+    def run(dollar: nil)
+      scope = Array(DOLLARS.detect { _1.name == dollar } || DOLLARS)
 
-      scope.map do |rate|
-        res = JSON.parse(Net::HTTP.get(uri(rate.endpoint)))
+      scope.map do |dollar|
+        res = JSON.parse(Net::HTTP.get(uri(dollar.endpoint)))
         buy, sell, variation = res.values_at("compra", "venta", "variacion")
-        Dollar.new(rate: rate, buy:, sell:, variation:)
+        Rate.new(dollar:, buy:, sell:, variation:)
       end
     end
 
