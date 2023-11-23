@@ -15,6 +15,17 @@ module Ambito
       @endpoint = endpoint
     end
 
+    def rate
+      gateway = Gateway.new(endpoint:)
+      buy, sell, variation = gateway.get("compra", "venta", "variacion")
+
+      Rate.new(dollar: self, buy:, sell:, variation:)
+    end
+
+    def to_s
+      display
+    end
+
     class << self
       def all
         LIST

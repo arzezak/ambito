@@ -14,7 +14,7 @@ module Ambito
     end
 
     def to_s
-      "#{dollar.display}: $ #{format(average)} #{trend} #{format(variation)}%"
+      "#{dollar}: $ #{format(average)} #{trend} #{format(variation)}%"
     end
 
     private

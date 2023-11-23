@@ -7,7 +7,11 @@ module Ambito
     end
 
     def run
-      puts Ambito.run(**options)
+      if options.any?
+        puts Ambito.rate(**options)
+      else
+        puts Ambito.rates
+      end
     end
 
     private

@@ -10,14 +10,8 @@ class TestAmbito < Minitest::Test
     refute_nil ::Ambito::VERSION
   end
 
-  def test_that_it_returns_rates
-    Ambito.run.each do |dollar|
-      assert_kind_of Ambito::Rate, dollar
-    end
-  end
-
   def test_that_it_returns_a_formatted_string
-    assert_equal <<~OUTPUT.chomp, Ambito.run.join("\n")
+    assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
       Oficial: $ 363.71 📈 0.58%
       Informal: $ 1050.00 📊 0.00%
       MEP: $ 930.44 📉 -6.60%
@@ -26,14 +20,14 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_includes_emoji_reflecting_upward_trends
-    assert_includes Ambito.run(dollar: "oficial").join, "📈"
+    assert_includes Ambito.rate(dollar: "oficial").to_s, "📈"
   end
 
   def test_that_it_includes_emoji_reflecting_downward_trends
-    assert_includes Ambito.run(dollar: "mep").join, "📉"
+    assert_includes Ambito.rate(dollar: "mep").to_s, "📉"
   end
 
   def test_that_it_includes_emoji_reflecting_stable_trends
-    assert_includes Ambito.run(dollar: "informal").join, "📊"
+    assert_includes Ambito.rate(dollar: "informal").to_s, "📊"
   end
 end

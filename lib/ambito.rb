@@ -8,13 +8,12 @@ require_relative "ambito/version"
 
 module Ambito
   class << self
-    def run(dollar: nil)
-      Array(Dollar.where(name: dollar)).map do |dollar|
-        gateway = Gateway.new(endpoint: dollar.endpoint)
-        buy, sell, variation = gateway.get("compra", "venta", "variacion")
+    def rates
+      Dollar.all.map(&:rate)
+    end
 
-        Rate.new(dollar:, buy:, sell:, variation:)
-      end
+    def rate(dollar:)
+      Dollar.find(dollar).rate
     end
   end
 end
