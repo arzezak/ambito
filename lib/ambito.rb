@@ -9,8 +9,6 @@ require_relative "ambito/rate"
 require_relative "ambito/version"
 
 module Ambito
-  class Error < StandardError; end
-
   BASE_URL = "https://mercados.ambito.com"
   DOLLARS = YAML.safe_load_file("./config/dollars.yml", permitted_classes: [Ambito::Dollar])
 
