@@ -21,6 +21,7 @@ class TestAmbito < Minitest::Test
       Oficial: $ 363.71 📈 0.58%
       Informal: $ 1050.00 📊 0.00%
       MEP: $ 930.44 📉 -6.60%
+      Cripto: $ 978.64 📉 -0.01%
     OUTPUT
   end
 

@@ -1,28 +1,24 @@
 module TestStubs
   def self.included(base)
     base.define_method(:setup) do
-      stub_request(:get, "https://mercados.ambito.com/dolar/oficial/variacion")
-        .to_return_json(body: {
-          compra: "353,71",
-          venta: "373,71",
-          variacion: "0,58%"
-        })
-
-      stub_request(:get, "https://mercados.ambito.com/dolar/informal/variacion")
-        .to_return_json(body: {
-          compra: "1025,00",
-          venta: "1075,00",
-          variacion: "0,00%"
-        })
-
-      stub_request(:get, "https://mercados.ambito.com/dolarrava/mep/variacion")
-        .to_return_json(body: {
-          compra: "930,44",
-          venta: "930,44",
-          ultimo: "872,61",
-          valor: "930,44",
-          variacion: "-6,60%"
-        })
+      stub_ambito_request to: "dolar/oficial", with: json("oficial")
+      stub_ambito_request to: "dolar/informal", with: json("informal")
+      stub_ambito_request to: "dolarrava/mep", with: json("mep")
+      stub_ambito_request to: "dolarcripto", with: json("cripto")
     end
+  end
+
+  private
+
+  def json(fixture)
+    {body: JSON.parse(File.read("./test/fixtures/#{fixture}.json"))}
+  end
+
+  def stub_ambito_request(to:, with:)
+    stub_request(:get, url(to)).to_return_json(with)
+  end
+
+  def url(dolar)
+    "https://mercados.ambito.com/#{dolar}/variacion"
   end
 end

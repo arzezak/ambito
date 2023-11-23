@@ -10,3 +10,7 @@
   name: mep
   display: MEP
   endpoint: /dolarrava/mep/variacion
+- !ruby/object:Ambito::Dollar
+  name: cripto
+  display: Cripto
+  endpoint: /dolarcripto/variacion
