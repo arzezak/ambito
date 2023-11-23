@@ -7,7 +7,7 @@ module Ambito
     end
 
     def run
-      puts options
+      puts Ambito.run(**options)
     end
 
     private

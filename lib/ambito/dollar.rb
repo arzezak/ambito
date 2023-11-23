@@ -27,7 +27,7 @@ module Ambito
       end
 
       def where(name: nil)
-        name ? find(name) : all
+        name && find(name) || all
       end
     end
   end
