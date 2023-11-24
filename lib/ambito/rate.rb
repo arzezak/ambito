@@ -15,21 +15,23 @@ module Ambito
     end
 
     def to_s
-      "#{dollar}: $ #{value} #{trend} #{format(variation)}%"
+      "#{dollar}: $ #{format(price)} #{trend} #{format(variation)}%"
     end
 
     private
 
-    attr_reader :dollar, :buy, :sell, :variation
+    attr_reader :dollar, :buy, :sell, :value, :variation
 
     def float(number)
-      return nil unless number
-
-      number.tr(",", ".").to_f
+      number && number.tr(",", ".").to_f || nil
     end
 
     def format(number)
       sprintf("%.2f" % number)
+    end
+
+    def price
+      value || average
     end
 
     def trend
@@ -40,10 +42,6 @@ module Ambito
       else
         TRENDS[:equal]
       end
-    end
-
-    def value
-      @value && format(@value) || format(average)
     end
   end
 end
