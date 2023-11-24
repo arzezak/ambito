@@ -8,7 +8,7 @@ module Ambito
 
     def run
       if options.any?
-        puts Ambito.rate(**options)
+        puts Ambito.rate(*options)
       else
         puts Ambito.rates
       end
@@ -17,10 +17,10 @@ module Ambito
     private
 
     def options
-      {}.tap do |parsed_options|
+      [].tap do |parsed_options|
         OptionParser.new do |options|
           options.on("-d", "--dollar DOLLAR", "Select the rate") do |dollar|
-            parsed_options[:dollar] = dollar
+            parsed_options << dollar
           end
         end.parse(@argv)
       end

@@ -12,7 +12,7 @@ module Ambito
       Dollar.all.map(&:rate)
     end
 
-    def rate(dollar:)
+    def rate(dollar)
       Dollar.find(dollar).rate
     end
   end
