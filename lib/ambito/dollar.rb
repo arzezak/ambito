@@ -17,9 +17,9 @@ module Ambito
 
     def rate
       gateway = Gateway.new(endpoint:)
-      buy, sell, variation = gateway.get("compra", "venta", "variacion")
+      buy, sell, value, variation = gateway.get("compra", "venta", "valor", "variacion")
 
-      Rate.new(dollar: self, buy:, sell:, variation:)
+      Rate.new(dollar: self, buy:, sell:, value:, variation:)
     end
 
     def to_s
@@ -35,10 +35,6 @@ module Ambito
         LIST.find do |dollar|
           dollar.name == String(name)
         end
-      end
-
-      def where(name: nil)
-        name && find(name) || all
       end
     end
   end

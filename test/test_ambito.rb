@@ -19,7 +19,7 @@ class TestAmbito < Minitest::Test
       Oficial: $ 363.71 📈 0.58%
       Informal: $ 1050.00 📊 0.00%
       MEP: $ 930.44 📉 -6.60%
-      Cripto: $ 978.64 📉 -0.01%
+      Cripto: $ 1004.09 📉 -0.01%
     OUTPUT
   end
 
@@ -51,5 +51,15 @@ class TestAmbito < Minitest::Test
     )
 
     assert_includes Ambito.rate(:oficial).to_s, "📊"
+  end
+
+  def test_that_it_uses_value_when_available
+    stub_ambito_request(
+      to: "dolar/oficial",
+      with: fixture(:oficial),
+      override: {"valor" => "462.13"}
+    )
+
+    assert_includes Ambito.rate(:oficial).to_s, "$ 462.13"
   end
 end

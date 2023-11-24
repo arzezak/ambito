@@ -2,10 +2,11 @@ module Ambito
   class Rate
     TRENDS = {up: "📈", down: "📉", equal: "📊"}.freeze
 
-    def initialize(dollar:, buy:, sell:, variation:)
+    def initialize(dollar:, buy:, sell:, value:, variation:)
       @dollar = dollar
       @buy = float(buy)
       @sell = float(sell)
+      @value = float(value)
       @variation = float(variation)
     end
 
@@ -14,12 +15,22 @@ module Ambito
     end
 
     def to_s
-      "#{dollar}: $ #{format(average)} #{trend} #{format(variation)}%"
+      "#{dollar}: $ #{value} #{trend} #{format(variation)}%"
     end
 
     private
 
     attr_reader :dollar, :buy, :sell, :variation
+
+    def float(number)
+      return nil unless number
+
+      number.tr(",", ".").to_f
+    end
+
+    def format(number)
+      sprintf("%.2f" % number)
+    end
 
     def trend
       if variation.positive?
@@ -31,12 +42,8 @@ module Ambito
       end
     end
 
-    def float(value)
-      value.tr(",", ".").to_f
-    end
-
-    def format(number)
-      sprintf("%.2f" % number)
+    def value
+      @value && format(@value) || format(average)
     end
   end
 end
