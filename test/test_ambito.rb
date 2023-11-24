@@ -20,14 +20,14 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_includes_emoji_reflecting_upward_trends
-    assert_includes Ambito.rate(dollar: "oficial").to_s, "📈"
+    assert_includes Ambito.rate(:oficial).to_s, "📈"
   end
 
   def test_that_it_includes_emoji_reflecting_downward_trends
-    assert_includes Ambito.rate(dollar: "mep").to_s, "📉"
+    assert_includes Ambito.rate(:mep).to_s, "📉"
   end
 
   def test_that_it_includes_emoji_reflecting_stable_trends
-    assert_includes Ambito.rate(dollar: "informal").to_s, "📊"
+    assert_includes Ambito.rate(:informal).to_s, "📊"
   end
 end
