@@ -4,30 +4,26 @@ module Ambito
 
     def initialize(dollar:, buy:, sell:, value:, variation:)
       @dollar = dollar
-      @buy = float(buy)
-      @sell = float(sell)
-      @value = float(value)
-      @variation = float(variation)
+      @buy = Price[buy]
+      @sell = Price[sell]
+      @value = Price[value]
+      @variation = variation.tr(",", ".").to_f
     end
 
     def average
-      (buy + sell) / 2
+      Price[(buy + sell) / 2]
     end
 
     def to_s
-      "#{dollar}: $ #{format(price)} #{trend} #{format(variation)}%"
+      "#{dollar}: #{price} #{trend} #{formatted_variation}%"
     end
 
     private
 
     attr_reader :dollar, :buy, :sell, :value, :variation
 
-    def float(number)
-      number && number.tr(",", ".").to_f || nil
-    end
-
-    def format(number)
-      sprintf("%.2f" % number)
+    def formatted_variation
+      sprintf("%.2f" % variation)
     end
 
     def price

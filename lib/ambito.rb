@@ -3,6 +3,7 @@
 require_relative "ambito/cli"
 require_relative "ambito/dollar"
 require_relative "ambito/gateway"
+require_relative "ambito/price"
 require_relative "ambito/rate"
 require_relative "ambito/version"
 
