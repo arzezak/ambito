@@ -1,1 +1,9 @@
-{"compra":"930,44","venta":"930,44","ultimo":"872,61","valor":"930,44","variacion":"-6,60%"}
+{
+  "compra": "972,75",
+  "venta": "972,75",
+  "ultimo": "1006,39",
+  "valor": "972,75",
+  "variacion": "-3,30%",
+  "valor_cierre_ant": "1006,39",
+  "class-variacion": "down"
+}

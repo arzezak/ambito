@@ -16,10 +16,10 @@ class TestAmbito < Minitest::Test
     stub_ambito_request to: "dolarcripto", with: fixture(:cripto)
 
     assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
-      Oficial: $ 363.71 📈 0.58%
-      Informal: $ 1050.00 📊 0.00%
-      MEP: $ 930.44 📉 -6.60%
-      Cripto: $ 1004.09 📉 -0.01%
+      Oficial: $ 365.38 📈 0.23%
+      Informal: $ 970.00 📉 -4.78%
+      MEP: $ 972.75 📉 -3.30%
+      Cripto: $ 980.98 📈 0.01%
     OUTPUT
   end
 

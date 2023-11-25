@@ -1,1 +1,7 @@
-{"compra":"1025,00","venta":"1075,00","variacion":"0,00%"}
+{
+  "compra": "945,00",
+  "venta": "995,00",
+  "variacion": "-4,78%",
+  "class-variacion": "down",
+  "valor_cierre_ant": "1045,00"
+}
