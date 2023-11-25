@@ -11,11 +11,9 @@ module TestHelper
     JSON.parse File.read("./test/fixtures/#{name}.json")
   end
 
-  def stub_ambito_request(to:, with:, override: {})
-    stub_request(:get, url(to)).to_return_json(body: with.merge(override))
-  end
-
-  def url(dolar)
-    "https://mercados.ambito.com/#{dolar}/variacion"
+  def stub_ambito_request(dollar, override: {})
+    stub_request(:get, /#{dollar}/).to_return_json(
+      body: fixture(dollar).merge(override)
+    )
   end
 end
