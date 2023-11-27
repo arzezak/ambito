@@ -7,8 +7,11 @@ module Ambito
     end
 
     def run
-      if options.any?
-        puts Ambito.rate(*options)
+      case options
+      in {dollar:}
+        puts Ambito.rate(dollar)
+      in {version: true}
+        puts Ambito::VERSION
       else
         puts Ambito.rates
       end
@@ -17,10 +20,13 @@ module Ambito
     private
 
     def options
-      [].tap do |parsed_options|
+      {}.tap do |parsed_options|
         OptionParser.new do |options|
           options.on("-d", "--dollar DOLLAR", "Select the rate") do |dollar|
-            parsed_options << dollar
+            parsed_options[:dollar] = dollar
+          end
+          options.on("-v", "--version", "Show version") do
+            parsed_options[:version] = true
           end
         end.parse(@argv)
       end
