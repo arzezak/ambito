@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2023-11-27
+
+### Added
+
+- Multi-threaded requests
+
 ## [0.2.1] - 2023-11-27
 
 ### Fixed
