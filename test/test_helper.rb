@@ -12,7 +12,7 @@ module TestHelper
   end
 
   def stub_ambito_request(dollar, override: {})
-    stub_request(:get, /#{dollar}/).to_return_json(
+    stub_request(:get, /#{String(dollar).squeeze}/).to_return_json(
       body: fixture(dollar).merge(override)
     )
   end

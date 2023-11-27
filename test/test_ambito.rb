@@ -14,12 +14,16 @@ class TestAmbito < Minitest::Test
     stub_ambito_request :informal
     stub_ambito_request :mep
     stub_ambito_request :cripto
+    stub_ambito_request :turista
+    stub_ambito_request :ccl
 
     assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
-      Oficial: $ 365.38 📈 0.23%
+      CCL: $ 858.28 📉 -7.10%
+      Cripto: $ 980.98 📈 0.01%
       Informal: $ 970.00 📉 -4.78%
       MEP: $ 972.75 📉 -3.30%
-      Cripto: $ 980.98 📈 0.01%
+      Oficial: $ 365.38 📈 0.23%
+      Turista: $ 960.56 📈 0.35%
     OUTPUT
   end
 

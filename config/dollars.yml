@@ -1,7 +1,11 @@
 - !ruby/object:Ambito::Dollar
-  name: oficial
-  display: Oficial
-  endpoint: /dolar/oficial/variacion
+  name: ccl
+  display: CCL
+  endpoint: /dolarrava/cl/variacion
+- !ruby/object:Ambito::Dollar
+  name: cripto
+  display: Cripto
+  endpoint: /dolarcripto/variacion
 - !ruby/object:Ambito::Dollar
   name: informal
   display: Informal
@@ -11,6 +15,10 @@
   display: MEP
   endpoint: /dolarrava/mep/variacion
 - !ruby/object:Ambito::Dollar
-  name: cripto
-  display: Cripto
-  endpoint: /dolarcripto/variacion
+  name: oficial
+  display: Oficial
+  endpoint: /dolar/oficial/variacion
+- !ruby/object:Ambito::Dollar
+  name: turista
+  display: Turista
+  endpoint: /dolarturista/variacion
