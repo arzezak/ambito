@@ -11,7 +11,11 @@ require_relative "ambito/version"
 module Ambito
   class << self
     def rates
-      Dollar.all.map(&:rate)
+      Dollar.all.map do |dollar|
+        Thread.new do
+          dollar.rate
+        end
+      end.map(&:value)
     end
 
     def rate(dollar)
