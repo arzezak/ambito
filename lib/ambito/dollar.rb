@@ -3,7 +3,7 @@ require "yaml"
 module Ambito
   class Dollar
     LIST = YAML.safe_load_file(
-      "./config/dollars.yml",
+      "#{__dir__}/../../config/dollars.yml",
       permitted_classes: [Ambito::Dollar]
     ).freeze
 
