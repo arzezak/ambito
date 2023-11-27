@@ -24,25 +24,25 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_includes_emoji_reflecting_upward_trends
-    stub_ambito_request :oficial, override: {"variacion" => "0,23%"}
+    stub_ambito_request :oficial, override: {variacion: "0,23%"}
 
     assert_includes Ambito.rate(:oficial).to_s, "📈"
   end
 
   def test_that_it_includes_emoji_reflecting_downward_trends
-    stub_ambito_request :oficial, override: {"variacion" => "-0,23%"}
+    stub_ambito_request :oficial, override: {variacion: "-0,23%"}
 
     assert_includes Ambito.rate(:oficial).to_s, "📉"
   end
 
   def test_that_it_includes_emoji_reflecting_stable_trends
-    stub_ambito_request :oficial, override: {"variacion" => "0,00%"}
+    stub_ambito_request :oficial, override: {variacion: "0,00%"}
 
     assert_includes Ambito.rate(:oficial).to_s, "📊"
   end
 
   def test_that_it_uses_value_when_available
-    stub_ambito_request :oficial, override: {"valor" => "462,13"}
+    stub_ambito_request :oficial, override: {valor: "462,13"}
 
     assert_includes Ambito.rate(:oficial).to_s, "$ 462.13"
   end
