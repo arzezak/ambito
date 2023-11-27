@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2023-11-27
+
+### Fixed
+
+- Correct path when loading configuration
+
 ## [0.2.0] - 2023-11-24
 
 ### Added
