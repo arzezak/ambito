@@ -68,10 +68,10 @@ PLATFORMS
 
 DEPENDENCIES
   ambito!
-  minitest (~> 5.0)
-  rake (~> 13.0)
-  standard (~> 1.3)
-  webmock (~> 3.19)
+  minitest
+  rake
+  standard
+  webmock
 
 BUNDLED WITH
    2.4.22
