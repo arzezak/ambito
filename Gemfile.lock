@@ -15,15 +15,19 @@ GEM
     json (2.6.3)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    logger (1.6.0)
     minitest (5.20.0)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
+    prism (0.30.0)
     public_suffix (5.0.4)
     racc (1.7.3)
     rainbow (3.1.1)
     rake (13.1.0)
+    rbs (3.5.1)
+      logger
     regexp_parser (2.8.2)
     rexml (3.2.6)
     rubocop (1.57.2)
@@ -42,7 +46,13 @@ GEM
     rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
+    ruby-lsp (0.17.4)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 0.29.0, < 0.31)
+      rbs (>= 3, < 4)
+      sorbet-runtime (>= 0.5.10782)
     ruby-progressbar (1.13.0)
+    sorbet-runtime (0.5.11471)
     standard (1.32.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -70,6 +80,7 @@ DEPENDENCIES
   ambito!
   minitest
   rake
+  ruby-lsp
   standard
   webmock
 
