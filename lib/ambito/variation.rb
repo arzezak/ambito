@@ -9,7 +9,7 @@ module Ambito
     end
 
     def to_s
-      sprintf("%.2f" % value) << "%"
+      "%.2f%%" % value
     end
 
     def trend
