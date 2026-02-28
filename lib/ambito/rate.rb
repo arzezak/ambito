@@ -9,7 +9,7 @@ module Ambito
     end
 
     def average
-      Price[(buy + sell) / 2]
+      (buy + sell) / 2
     end
 
     def to_s

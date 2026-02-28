@@ -7,7 +7,11 @@ module Ambito
     end
 
     def +(other)
-      quote + other.quote
+      self.class.new(quote + other.quote)
+    end
+
+    def /(other)
+      self.class.new(quote / other)
     end
 
     def parse(quote)
