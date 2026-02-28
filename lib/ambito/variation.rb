@@ -27,11 +27,5 @@ module Ambito
     def parse(value)
       value.tr(",", ".").to_f
     end
-
-    class << self
-      def [](value)
-        new(value)
-      end
-    end
   end
 end

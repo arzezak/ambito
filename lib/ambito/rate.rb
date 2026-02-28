@@ -2,10 +2,10 @@ module Ambito
   class Rate
     def initialize(dollar:, buy:, sell:, value:, variation:)
       @dollar = dollar
-      @buy = Price[buy]
-      @sell = Price[sell]
-      @value = Price[value]
-      @variation = Variation[variation]
+      @buy = Price.new(buy)
+      @sell = Price.new(sell)
+      @value = value && Price.new(value)
+      @variation = Variation.new(variation)
     end
 
     def average

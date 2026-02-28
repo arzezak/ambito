@@ -18,12 +18,6 @@ module Ambito
       "$ %.2f" % quote
     end
 
-    class << self
-      def [](quote)
-        quote && new(quote)
-      end
-    end
-
     private
 
     def parse(quote)
