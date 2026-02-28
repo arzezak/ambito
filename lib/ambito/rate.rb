@@ -1,7 +1,5 @@
 module Ambito
   class Rate
-    TRENDS = {up: "📈", down: "📉", equal: "📊"}.freeze
-
     def initialize(dollar:, buy:, sell:, value:, variation:)
       @dollar = dollar
       @buy = Price[buy]
