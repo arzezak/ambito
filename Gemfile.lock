@@ -74,6 +74,7 @@ GEM
     standard-performance (1.9.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.26.0)
+    swarf (0.2.1)
     tsort (0.2.0)
     unicode-display_width (3.3.0)
       unicode-emoji (~> 4.3)
@@ -95,6 +96,7 @@ DEPENDENCIES
   rake
   ruby-lsp
   standard
+  swarf
   webmock
 
 BUNDLED WITH
