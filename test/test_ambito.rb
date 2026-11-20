@@ -58,6 +58,18 @@ class TestAmbito < Minitest::Test
     assert_in_delta 462.13, Ambito.rate(:oficial).price.quote
   end
 
+  def test_that_it_fetches_a_custom_dollar
+    dollar = Ambito::Dollar.new(
+      name: "mayorista",
+      display: "Mayorista",
+      endpoint: "/dolar/mayorista/variacion"
+    )
+    stub_request(:get, "https://mercados.ambito.com/dolar/mayorista/variacion")
+      .to_return_json(body: fixture(:oficial))
+
+    assert_equal "Mayorista: $ 365.38 📈 0.23%", Ambito::Gateway.new(dollar).rate.to_s
+  end
+
   def test_that_it_raises_on_an_unknown_dollar
     error = assert_raises(Ambito::Error) { Ambito.rate(:nope) }
 
@@ -91,6 +103,22 @@ class TestAmbito < Minitest::Test
     stub_request(:get, /mep/).to_return(status: 500)
 
     assert_raises(Ambito::Error) { Ambito.rates }
+  end
+
+  def test_that_the_cli_prints_all_rates
+    stub_all_ambito_requests
+
+    assert_output(/\ACCL: .+^Turista: \$ 960\.56 📈 0\.35%\n\z/m) { Ambito::CLI.new([]).run }
+  end
+
+  def test_that_the_cli_prints_a_single_rate
+    stub_ambito_request :oficial
+
+    assert_output("Oficial: $ 365.38 📈 0.23%\n") { Ambito::CLI.new(%w[-d oficial]).run }
+  end
+
+  def test_that_the_cli_prints_the_version
+    assert_output("#{Ambito::VERSION}\n") { Ambito::CLI.new(%w[-v]).run }
   end
 
   def test_that_the_cli_exits_with_the_error_message
