@@ -84,6 +84,22 @@ class TestAmbito < Minitest::Test
     assert_equal "Oficial: bad compra in response", error.message
   end
 
+  def test_that_it_raises_on_a_field_that_is_not_a_number
+    stub_ambito_request :oficial, override: {compra: "N/D"}
+
+    error = assert_raises(Ambito::Error) { Ambito.rate(:oficial) }
+
+    assert_equal "Oficial: bad compra in response", error.message
+  end
+
+  def test_that_it_raises_on_json_that_is_not_an_object
+    stub_request(:get, /oficial/).to_return_json(body: [])
+
+    error = assert_raises(Ambito::Error) { Ambito.rate(:oficial) }
+
+    assert_equal "Oficial: unexpected response", error.message
+  end
+
   def test_that_it_raises_on_a_response_that_is_not_json
     stub_request(:get, /oficial/).to_return(body: "<html></html>")
 
