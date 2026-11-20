@@ -23,11 +23,11 @@ ruby -Ilib:test test/test_ambito.rb -n test_method_name
 
 ## Architecture
 
-- `lib/ambito.rb` — Public API: `Ambito.rates` (threaded fetch all) and `Ambito.rate(dollar)`
+- `lib/ambito.rb` — Public API: `Ambito.rates` (threaded fetch all) and `Ambito.rate(dollar)`; both raise `Ambito::Error`
 - `lib/ambito/dollar.rb` — Dollar types loaded from `config/dollars.yml`; `Dollar.all` / `Dollar.find(name)`
-- `lib/ambito/gateway.rb` — HTTP client (Net::HTTP) hitting `mercados.ambito.com` JSON endpoints
-- `lib/ambito/rate.rb` — Aggregates buy/sell Price + Variation; includes trend emoji (📈📉📊)
-- `lib/ambito/price.rb` — Parses currency values (comma→dot conversion)
+- `lib/ambito/gateway.rb` — The only module that knows the wire format: fetches a Dollar's endpoint on `mercados.ambito.com` (Net::HTTP), parses field names and comma decimals, returns a Rate
+- `lib/ambito/rate.rb` — Value object: `dollar`, `buy`, `sell`, `price`, `variation`; `to_s` includes trend emoji (📈📉📊)
+- `lib/ambito/price.rb` — Numeric quote with `+`, `/` and currency formatting
 - `lib/ambito/variation.rb` — Percentage change with trend direction
 - `lib/ambito/cli.rb` — OptionParser-based CLI
 - `config/dollars.yml` — YAML config defining dollar types and their API endpoints

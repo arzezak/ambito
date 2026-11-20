@@ -9,17 +9,26 @@ require_relative "ambito/variation"
 require_relative "ambito/version"
 
 module Ambito
+  Error = Class.new(StandardError)
+
   class << self
     def rates
       Dollar.all.map do |dollar|
         Thread.new do
-          dollar.rate
+          Thread.current.report_on_exception = false
+          fetch(dollar)
         end
       end.map(&:value)
     end
 
-    def rate(dollar)
-      Dollar.find(dollar).rate
+    def rate(name)
+      fetch(Dollar.find(name))
+    end
+
+    private
+
+    def fetch(dollar)
+      Gateway.new(dollar).rate
     end
   end
 end

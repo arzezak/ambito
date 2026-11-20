@@ -3,7 +3,7 @@ module Ambito
     attr_reader :quote
 
     def initialize(quote)
-      @quote = parse(quote)
+      @quote = quote
     end
 
     def +(other)
@@ -16,12 +16,6 @@ module Ambito
 
     def to_s
       "$ %.2f" % quote
-    end
-
-    private
-
-    def parse(quote)
-      String(quote).tr(",", ".").to_f
     end
   end
 end

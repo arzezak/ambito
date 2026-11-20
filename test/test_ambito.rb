@@ -10,12 +10,7 @@ class TestAmbito < Minitest::Test
   end
 
   def test_that_it_returns_a_formatted_string
-    stub_ambito_request :oficial
-    stub_ambito_request :informal
-    stub_ambito_request :mep
-    stub_ambito_request :cripto
-    stub_ambito_request :turista
-    stub_ambito_request :ccl
+    stub_all_ambito_requests
 
     assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
       CCL: $ 858.28 📉 -7.10%
@@ -27,27 +22,82 @@ class TestAmbito < Minitest::Test
     OUTPUT
   end
 
+  def test_that_it_exposes_the_values_of_a_rate
+    stub_ambito_request :oficial
+
+    rate = Ambito.rate(:oficial)
+
+    assert_equal "oficial", rate.dollar.name
+    assert_in_delta 355.38, rate.buy.quote
+    assert_in_delta 375.38, rate.sell.quote
+    assert_in_delta 365.38, rate.price.quote
+    assert_in_delta 0.23, rate.variation.value
+  end
+
   def test_that_it_includes_emoji_reflecting_upward_trends
     stub_ambito_request :oficial, override: {variacion: "0,23%"}
 
-    assert_includes Ambito.rate(:oficial).to_s, "📈"
+    assert_equal "📈", Ambito.rate(:oficial).variation.trend
   end
 
   def test_that_it_includes_emoji_reflecting_downward_trends
     stub_ambito_request :oficial, override: {variacion: "-0,23%"}
 
-    assert_includes Ambito.rate(:oficial).to_s, "📉"
+    assert_equal "📉", Ambito.rate(:oficial).variation.trend
   end
 
   def test_that_it_includes_emoji_reflecting_stable_trends
     stub_ambito_request :oficial, override: {variacion: "0,00%"}
 
-    assert_includes Ambito.rate(:oficial).to_s, "📊"
+    assert_equal "📊", Ambito.rate(:oficial).variation.trend
   end
 
   def test_that_it_uses_value_when_available
     stub_ambito_request :oficial, override: {valor: "462,13"}
 
-    assert_includes Ambito.rate(:oficial).to_s, "$ 462.13"
+    assert_in_delta 462.13, Ambito.rate(:oficial).price.quote
+  end
+
+  def test_that_it_raises_on_an_unknown_dollar
+    error = assert_raises(Ambito::Error) { Ambito.rate(:nope) }
+
+    assert_equal "Unknown dollar: nope", error.message
+  end
+
+  def test_that_it_raises_on_a_missing_field
+    stub_request(:get, /oficial/).to_return_json(body: fixture(:oficial).except("compra"))
+
+    error = assert_raises(Ambito::Error) { Ambito.rate(:oficial) }
+
+    assert_equal "Oficial: bad compra in response", error.message
+  end
+
+  def test_that_it_raises_on_a_response_that_is_not_json
+    stub_request(:get, /oficial/).to_return(body: "<html></html>")
+
+    assert_raises(Ambito::Error) { Ambito.rate(:oficial) }
+  end
+
+  def test_that_it_raises_on_an_http_error
+    stub_request(:get, /oficial/).to_return(status: 403, body: "{}")
+
+    error = assert_raises(Ambito::Error) { Ambito.rate(:oficial) }
+
+    assert_equal "Oficial: HTTP 403", error.message
+  end
+
+  def test_that_rates_raises_when_one_dollar_fails
+    stub_all_ambito_requests
+    stub_request(:get, /mep/).to_return(status: 500)
+
+    assert_raises(Ambito::Error) { Ambito.rates }
+  end
+
+  def test_that_the_cli_exits_with_the_error_message
+    _, err = capture_io do
+      assert_raises(SystemExit) { Ambito::CLI.new(%w[-d nope]).run }
+    end
+
+    assert_equal "Unknown dollar: nope\n", err
   end
 end

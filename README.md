@@ -23,9 +23,18 @@ gem "ambito"
 Ambito.rates
 
 # Fetch a single rate
-Ambito.rate("informal")
-Ambito.rate("oficial")
+rate = Ambito.rate("oficial")
+
+rate.to_s             # => "Oficial: $ 365.38 📈 0.23%"
+rate.buy.quote        # => 355.38
+rate.sell.quote       # => 375.38
+rate.price.quote      # => 365.38
+rate.variation.value  # => 0.23
 ```
+
+`price` is the value Ámbito publishes for the rate, or the average of buy and sell when it publishes none.
+
+Both methods raise `Ambito::Error` for an unknown dollar, an HTTP error or a response that cannot be read. `Ambito.rates` raises if any one rate fails.
 
 ### CLI
 

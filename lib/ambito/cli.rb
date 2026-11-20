@@ -15,6 +15,8 @@ module Ambito
       else
         puts Ambito.rates
       end
+    rescue Error => e
+      abort e.message
     end
 
     private

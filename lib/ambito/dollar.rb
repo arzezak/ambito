@@ -15,13 +15,6 @@ module Ambito
       @endpoint = endpoint
     end
 
-    def rate
-      gateway = Gateway.new(endpoint:)
-      buy, sell, value, variation = gateway.get("compra", "venta", "valor", "variacion")
-
-      Rate.new(dollar: self, buy:, sell:, value:, variation:)
-    end
-
     def to_s
       display
     end
@@ -32,9 +25,8 @@ module Ambito
       end
 
       def find(name)
-        LIST.find do |dollar|
-          dollar.name == String(name)
-        end
+        LIST.find { |dollar| dollar.name == String(name) } ||
+          raise(Error, "Unknown dollar: #{name}")
       end
     end
   end

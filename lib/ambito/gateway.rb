@@ -7,24 +7,50 @@ module Ambito
   class Gateway
     BASE_URL = "https://mercados.ambito.com"
 
-    def initialize(endpoint:)
-      @endpoint = endpoint
+    def initialize(dollar)
+      @dollar = dollar
     end
 
-    def get(*)
-      JSON.parse(request).values_at(*)
+    def rate
+      Rate.new(
+        dollar:,
+        buy: number("compra"),
+        sell: number("venta"),
+        value: (number("valor") if payload.key?("valor")),
+        variation: number("variacion")
+      )
     end
 
     private
 
-    attr_reader :endpoint
+    attr_reader :dollar
 
-    def request
-      Net::HTTP.get(uri)
+    def number(field)
+      parse(payload[field]) || raise(Error, "#{dollar}: bad #{field} in response")
     end
 
-    def uri
-      URI.join(BASE_URL, endpoint)
+    def parse(text)
+      Float(String(text).tr(",", ".").delete_suffix("%"), exception: false)
+    end
+
+    def payload
+      @payload ||= Hash.try_convert(json) || raise(Error, "#{dollar}: unexpected response")
+    end
+
+    def json
+      JSON.parse(body)
+    rescue JSON::ParserError
+      nil
+    end
+
+    def body
+      raise Error, "#{dollar}: HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+      response.body
+    end
+
+    def response
+      @response ||= Net::HTTP.get_response(URI.join(BASE_URL, dollar.endpoint))
     end
   end
 end

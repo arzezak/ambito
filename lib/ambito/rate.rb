@@ -1,11 +1,17 @@
 module Ambito
   class Rate
-    def initialize(dollar:, buy:, sell:, value:, variation:)
+    attr_reader :dollar, :buy, :sell, :variation
+
+    def initialize(dollar:, buy:, sell:, variation:, value: nil)
       @dollar = dollar
       @buy = Price.new(buy)
       @sell = Price.new(sell)
       @value = value && Price.new(value)
       @variation = Variation.new(variation)
+    end
+
+    def price
+      value || average
     end
 
     def average
@@ -18,10 +24,6 @@ module Ambito
 
     private
 
-    attr_reader :dollar, :buy, :sell, :value, :variation
-
-    def price
-      value || average
-    end
+    attr_reader :value
   end
 end

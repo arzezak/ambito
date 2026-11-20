@@ -5,7 +5,7 @@ module Ambito
     attr_reader :value
 
     def initialize(value)
-      @value = parse(value)
+      @value = value
     end
 
     def to_s
@@ -20,12 +20,6 @@ module Ambito
       else
         TRENDS[:equal]
       end
-    end
-
-    private
-
-    def parse(value)
-      value.tr(",", ".").to_f
     end
   end
 end
