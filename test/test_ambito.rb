@@ -11,28 +11,10 @@ class TestAmbito < Minitest::Test
     refute_nil ::Ambito::VERSION
   end
 
-  def test_that_it_returns_a_formatted_string
+  def test_that_it_returns_a_rate_for_every_dollar
     stub_all_ambito_requests
 
-    assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
-      BNA 📈 +0.93%
-        Compra  $ 1580.00
-        Venta   $ 1630.00
-      CCL 📉 -7.10%
-        $ 858.28
-      Cripto 📈 +0.01%
-        $ 980.98
-      Informal 📉 -4.78%
-        Compra  $ 945.00
-        Venta   $ 995.00
-      MEP 📉 -3.30%
-        $ 972.75
-      Oficial 📈 +0.23%
-        Compra  $ 355.38
-        Venta   $ 375.38
-      Turista 📈 +0.35%
-        $ 960.56
-    OUTPUT
+    assert_equal %w[bna ccl cripto informal mep oficial turista], Ambito.rates.map { |rate| rate.dollar.name }
   end
 
   def test_that_it_exposes_the_values_of_a_rate
@@ -92,7 +74,10 @@ class TestAmbito < Minitest::Test
     stub_request(:get, "https://mercados.ambito.com/dolar/mayorista/variacion")
       .to_return_json(body: fixture(:oficial))
 
-    assert_equal "Mayorista 📈 +0.23%\n  Compra  $ 355.38\n  Venta   $ 375.38", Ambito::Gateway.new(dollar).rate.to_s
+    rate = Ambito::Gateway.new(dollar).rate
+
+    assert_equal "Mayorista", rate.dollar.to_s
+    assert_in_delta 375.38, rate.sell.quote
   end
 
   def test_that_it_raises_on_an_unknown_dollar

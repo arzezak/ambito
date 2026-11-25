@@ -18,17 +18,5 @@ module Ambito
     def average
       (buy + sell) / 2
     end
-
-    def to_s
-      ["#{dollar} #{variation.trend} #{variation}", *quotes].join("\n")
-    end
-
-    private
-
-    def quotes
-      return ["  #{value}"] if value
-
-      ["  Compra  #{buy}", "  Venta   #{sell}"]
-    end
   end
 end

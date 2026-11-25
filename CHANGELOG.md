@@ -12,7 +12,10 @@
 ### Changed
 
 - `Variation#to_s` puts a `+` before a positive change, as `+0.23%`
-- `Rate#to_s` prints the name and variation on one line and the prices below it: the published value, or `Compra` and `Venta` on their own lines when there is none, instead of their average
+
+### Removed
+
+- `Rate#to_s`; print rates with `Ambito::Table`
 
 ## [0.4.0] - 2026-11-20
 
