@@ -9,7 +9,7 @@ module Ambito
     end
 
     def to_s
-      "%.2f%%" % value
+      "#{"+" if value.positive?}%.2f%%" % value
     end
 
     def trend

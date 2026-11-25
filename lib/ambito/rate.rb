@@ -1,13 +1,14 @@
 module Ambito
   class Rate
-    attr_reader :dollar, :buy, :sell, :variation
+    attr_reader :dollar, :buy, :sell, :value, :variation, :updated_at
 
-    def initialize(dollar:, buy:, sell:, variation:, value: nil)
+    def initialize(dollar:, buy:, sell:, variation:, value: nil, updated_at: nil)
       @dollar = dollar
       @buy = Price.new(buy)
       @sell = Price.new(sell)
       @value = value && Price.new(value)
       @variation = Variation.new(variation)
+      @updated_at = updated_at
     end
 
     def price
@@ -19,11 +20,15 @@ module Ambito
     end
 
     def to_s
-      "#{dollar}: #{price} #{variation.trend} #{variation}"
+      ["#{dollar} #{variation.trend} #{variation}", *quotes].join("\n")
     end
 
     private
 
-    attr_reader :value
+    def quotes
+      return ["  #{value}"] if value
+
+      ["  Compra  #{buy}", "  Venta   #{sell}"]
+    end
   end
 end

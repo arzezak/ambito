@@ -2,10 +2,13 @@
 
 require "net/http"
 require "json"
+require "time"
 
 module Ambito
   class Gateway
     BASE_URL = "https://mercados.ambito.com"
+    TIME_FORMAT = "%d/%m/%Y %H:%M %z"
+    UTC_OFFSET = "-03:00"
 
     def initialize(dollar)
       @dollar = dollar
@@ -17,13 +20,20 @@ module Ambito
         buy: number("compra"),
         sell: number("venta"),
         value: (number("valor") if payload.key?("valor")),
-        variation: number("variacion")
+        variation: number("variacion"),
+        updated_at:
       )
     end
 
     private
 
     attr_reader :dollar
+
+    def updated_at
+      Time.strptime("#{String(payload["fecha"]).delete("-")} #{UTC_OFFSET}", TIME_FORMAT)
+    rescue ArgumentError
+      nil
+    end
 
     def number(field)
       parse(payload[field]) || raise(Error, "#{dollar}: bad #{field} in response")

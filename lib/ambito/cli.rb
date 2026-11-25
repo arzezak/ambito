@@ -2,24 +2,29 @@ require "optparse"
 
 module Ambito
   class CLI
-    def initialize(argv)
+    def initialize(argv, now: Time.now)
       @argv = argv
+      @now = now
     end
 
     def run
       case options
       in {dollar:}
-        puts Ambito.rate(dollar)
+        puts table([Ambito.rate(dollar)])
       in {version: true}
         puts Ambito::VERSION
       else
-        puts Ambito.rates
+        puts table(Ambito.rates)
       end
     rescue Error => e
       abort e.message
     end
 
     private
+
+    def table(rates)
+      Table.new(rates, now: @now, color: $stdout.tty?)
+    end
 
     def options
       {}.tap do |parsed_options|

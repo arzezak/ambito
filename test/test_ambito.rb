@@ -5,6 +5,8 @@ require "test_helper"
 class TestAmbito < Minitest::Test
   include TestHelper
 
+  NOW = Time.new(2026, 11, 25, 15, 42, 0, "-03:00")
+
   def test_that_it_has_a_version_number
     refute_nil ::Ambito::VERSION
   end
@@ -13,13 +15,23 @@ class TestAmbito < Minitest::Test
     stub_all_ambito_requests
 
     assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
-      BNA: $ 1605.00 📈 0.93%
-      CCL: $ 858.28 📉 -7.10%
-      Cripto: $ 980.98 📈 0.01%
-      Informal: $ 970.00 📉 -4.78%
-      MEP: $ 972.75 📉 -3.30%
-      Oficial: $ 365.38 📈 0.23%
-      Turista: $ 960.56 📈 0.35%
+      BNA 📈 +0.93%
+        Compra  $ 1580.00
+        Venta   $ 1630.00
+      CCL 📉 -7.10%
+        $ 858.28
+      Cripto 📈 +0.01%
+        $ 980.98
+      Informal 📉 -4.78%
+        Compra  $ 945.00
+        Venta   $ 995.00
+      MEP 📉 -3.30%
+        $ 972.75
+      Oficial 📈 +0.23%
+        Compra  $ 355.38
+        Venta   $ 375.38
+      Turista 📈 +0.35%
+        $ 960.56
     OUTPUT
   end
 
@@ -53,6 +65,18 @@ class TestAmbito < Minitest::Test
     assert_equal "📊", Ambito.rate(:oficial).variation.trend
   end
 
+  def test_that_it_reads_when_the_rate_was_updated
+    stub_ambito_request :bna
+
+    assert_equal Time.new(2026, 11, 25, 15, 30, 0, "-03:00"), Ambito.rate(:bna).updated_at
+  end
+
+  def test_that_it_has_no_update_time_when_the_date_is_unreadable
+    stub_ambito_request :bna, override: {fecha: "N/D"}
+
+    assert_nil Ambito.rate(:bna).updated_at
+  end
+
   def test_that_it_uses_value_when_available
     stub_ambito_request :oficial, override: {valor: "462,13"}
 
@@ -68,7 +92,7 @@ class TestAmbito < Minitest::Test
     stub_request(:get, "https://mercados.ambito.com/dolar/mayorista/variacion")
       .to_return_json(body: fixture(:oficial))
 
-    assert_equal "Mayorista: $ 365.38 📈 0.23%", Ambito::Gateway.new(dollar).rate.to_s
+    assert_equal "Mayorista 📈 +0.23%\n  Compra  $ 355.38\n  Venta   $ 375.38", Ambito::Gateway.new(dollar).rate.to_s
   end
 
   def test_that_it_raises_on_an_unknown_dollar
@@ -125,13 +149,45 @@ class TestAmbito < Minitest::Test
   def test_that_the_cli_prints_all_rates
     stub_all_ambito_requests
 
-    assert_output(/\ABNA: .+^Turista: \$ 960\.56 📈 0\.35%\n\z/m) { Ambito::CLI.new([]).run }
+    assert_output(<<~OUTPUT) { Ambito::CLI.new([], now: NOW).run }
+      ┌──────────┬───────────┬───────────┬────────┬───────────────┐
+      │          │ Compra    │ Venta     │ Cambio │ Actualización │
+      ├──────────┼───────────┼───────────┼────────┼───────────────┤
+      │ BNA      │ $ 1580.00 │ $ 1630.00 │ +0.93% │ hace 12 min   │
+      ├──────────┼───────────┴───────────┼────────┼───────────────┤
+      │ CCL      │       $ 858.28        │ -7.10% │               │
+      ├──────────┼───────────────────────┼────────┼───────────────┤
+      │ Cripto   │       $ 980.98        │ +0.01% │               │
+      ├──────────┼───────────┬───────────┼────────┼───────────────┤
+      │ Informal │ $ 945.00  │ $ 995.00  │ -4.78% │               │
+      ├──────────┼───────────┴───────────┼────────┼───────────────┤
+      │ MEP      │       $ 972.75        │ -3.30% │               │
+      ├──────────┼───────────┬───────────┼────────┼───────────────┤
+      │ Oficial  │ $ 355.38  │ $ 375.38  │ +0.23% │ hace 1 h      │
+      ├──────────┼───────────┴───────────┼────────┼───────────────┤
+      │ Turista  │       $ 960.56        │ +0.35% │ hace 2 d      │
+      └──────────┴───────────────────────┴────────┴───────────────┘
+    OUTPUT
+  end
+
+  def test_that_the_table_colors_a_falling_rate_red
+    stub_ambito_request :informal
+
+    table = Ambito::Table.new([Ambito.rate(:informal)], now: NOW, color: true).to_s
+
+    assert_includes table, "\e[36m$ 945.00\e[0m \e[2m│\e[0m \e[36m$ 995.00\e[0m \e[2m│\e[0m \e[31m-4.78%\e[0m"
   end
 
   def test_that_the_cli_prints_a_single_rate
     stub_ambito_request :oficial
 
-    assert_output("Oficial: $ 365.38 📈 0.23%\n") { Ambito::CLI.new(%w[-d oficial]).run }
+    assert_output(<<~OUTPUT) { Ambito::CLI.new(%w[-d oficial], now: NOW).run }
+      ┌─────────┬──────────┬──────────┬────────┬───────────────┐
+      │         │ Compra   │ Venta    │ Cambio │ Actualización │
+      ├─────────┼──────────┼──────────┼────────┼───────────────┤
+      │ Oficial │ $ 355.38 │ $ 375.38 │ +0.23% │ hace 1 h      │
+      └─────────┴──────────┴──────────┴────────┴───────────────┘
+    OUTPUT
   end
 
   def test_that_the_cli_prints_the_version

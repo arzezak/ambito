@@ -25,14 +25,15 @@ Ambito.rates
 # Fetch a single rate
 rate = Ambito.rate("oficial")
 
-rate.to_s             # => "Oficial: $ 365.38 📈 0.23%"
+rate.to_s             # => "Oficial 📈 +0.23%\n  Compra  $ 355.38\n  Venta   $ 375.38"
 rate.buy.quote        # => 355.38
 rate.sell.quote       # => 375.38
 rate.price.quote      # => 365.38
 rate.variation.value  # => 0.23
+rate.updated_at       # => 2026-11-25 13:48:00 -0300
 ```
 
-`price` is the value Ámbito publishes for the rate, or the average of buy and sell when it publishes none.
+`price` is the value Ámbito publishes for the rate, or the average of buy and sell when it publishes none. `value` is that published value, or `nil`. `to_s` prints it, or buy (`Compra`) and sell (`Venta`) on their own lines when there is none.
 
 Both methods raise `Ambito::Error` for an unknown dollar, an HTTP error or a response that cannot be read. `Ambito.rates` raises if any one rate fails.
 
@@ -41,6 +42,20 @@ Both methods raise `Ambito::Error` for an unknown dollar, an HTTP error or a res
 ```
 ambito              # all rates
 ambito -d oficial   # single rate
+```
+
+The CLI prints a table, in colour when the output is a terminal. A rate with no buy and sell shows the value Ámbito publishes across both columns. `Actualización` is the time since Ámbito last updated the rate.
+
+```
+┌─────────┬───────────┬───────────┬────────┬───────────────┐
+│         │ Compra    │ Venta     │ Cambio │ Actualización │
+├─────────┼───────────┼───────────┼────────┼───────────────┤
+│ BNA     │ $ 1580.00 │ $ 1630.00 │ +0.93% │ hace 2 min    │
+├─────────┼───────────┴───────────┼────────┼───────────────┤
+│ CCL     │       $ 1728.79       │ -3.70% │ hace 2 h      │
+├─────────┼───────────────────────┼────────┼───────────────┤
+│ Turista │       $ 2119.00       │ +0.93% │ hace 1 d      │
+└─────────┴───────────────────────┴────────┴───────────────┘
 ```
 
 ## Supported Dollar Types

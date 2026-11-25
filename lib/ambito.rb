@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "ambito/age"
 require_relative "ambito/cli"
 require_relative "ambito/dollar"
 require_relative "ambito/gateway"
 require_relative "ambito/price"
 require_relative "ambito/rate"
+require_relative "ambito/table"
 require_relative "ambito/variation"
 require_relative "ambito/version"
 
