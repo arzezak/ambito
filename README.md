@@ -28,13 +28,13 @@ rate = Ambito.rate("oficial")
 rate.buy.quote        # => 355.38
 rate.buy.to_s         # => "$ 355.38"
 rate.sell.quote       # => 375.38
-rate.price.quote      # => 365.38
+rate.value            # => nil
 rate.variation.value  # => 0.23
 rate.variation.to_s   # => "+0.23%"
 rate.updated_at       # => 2026-11-25 13:48:00 -0300
 ```
 
-`price` is the value Ámbito publishes for the rate, or the average of buy and sell when it publishes none. `value` is that published value, or `nil`. To print rates, pass them to `Ambito::Table.new(rates)`, which is what the CLI does.
+`value` is the single value Ámbito publishes for a rate with no buy and sell, such as MEP or Turista, as a price like `buy` and `sell`; it is `nil` for the rest. To print rates, pass them to `Ambito::Table.new(rates)`, which is what the CLI does.
 
 Both methods raise `Ambito::Error` for an unknown dollar, an HTTP error or a response that cannot be read. `Ambito.rates` raises if any one rate fails.
 

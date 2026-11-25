@@ -6,14 +6,6 @@ module Ambito
       @quote = quote
     end
 
-    def +(other)
-      self.class.new(quote + other.quote)
-    end
-
-    def /(other)
-      self.class.new(quote / other)
-    end
-
     def to_s
       "$ %.2f" % quote
     end

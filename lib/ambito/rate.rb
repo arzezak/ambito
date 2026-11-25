@@ -10,13 +10,5 @@ module Ambito
       @variation = Variation.new(variation)
       @updated_at = updated_at
     end
-
-    def price
-      value || average
-    end
-
-    def average
-      (buy + sell) / 2
-    end
   end
 end

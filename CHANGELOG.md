@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Removed
+
+- `Rate#price` and `Rate#average`; read `value`, or `buy` and `sell`
+- `Price#+` and `Price#/`
+- `Variation#trend`
+
 ## [0.5.0] - 2026-11-25
 
 ### Added

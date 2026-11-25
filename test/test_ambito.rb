@@ -25,26 +25,7 @@ class TestAmbito < Minitest::Test
     assert_equal "oficial", rate.dollar.name
     assert_in_delta 355.38, rate.buy.quote
     assert_in_delta 375.38, rate.sell.quote
-    assert_in_delta 365.38, rate.price.quote
     assert_in_delta 0.23, rate.variation.value
-  end
-
-  def test_that_it_includes_emoji_reflecting_upward_trends
-    stub_ambito_request :oficial, override: {variacion: "0,23%"}
-
-    assert_equal "📈", Ambito.rate(:oficial).variation.trend
-  end
-
-  def test_that_it_includes_emoji_reflecting_downward_trends
-    stub_ambito_request :oficial, override: {variacion: "-0,23%"}
-
-    assert_equal "📉", Ambito.rate(:oficial).variation.trend
-  end
-
-  def test_that_it_includes_emoji_reflecting_stable_trends
-    stub_ambito_request :oficial, override: {variacion: "0,00%"}
-
-    assert_equal "📊", Ambito.rate(:oficial).variation.trend
   end
 
   def test_that_it_reads_when_the_rate_was_updated
@@ -59,10 +40,10 @@ class TestAmbito < Minitest::Test
     assert_nil Ambito.rate(:bna).updated_at
   end
 
-  def test_that_it_uses_value_when_available
+  def test_that_it_reads_the_published_value
     stub_ambito_request :oficial, override: {valor: "462,13"}
 
-    assert_in_delta 462.13, Ambito.rate(:oficial).price.quote
+    assert_in_delta 462.13, Ambito.rate(:oficial).value.quote
   end
 
   def test_that_it_fetches_a_custom_dollar
