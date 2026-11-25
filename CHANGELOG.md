@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `bna` dollar, the Banco Nación rate
+
 ## [0.4.0] - 2026-11-20
 
 ### Added

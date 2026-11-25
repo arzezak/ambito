@@ -13,6 +13,7 @@ class TestAmbito < Minitest::Test
     stub_all_ambito_requests
 
     assert_equal <<~OUTPUT.chomp, Ambito.rates.join("\n")
+      BNA: $ 1605.00 📈 0.93%
       CCL: $ 858.28 📉 -7.10%
       Cripto: $ 980.98 📈 0.01%
       Informal: $ 970.00 📉 -4.78%
@@ -124,7 +125,7 @@ class TestAmbito < Minitest::Test
   def test_that_the_cli_prints_all_rates
     stub_all_ambito_requests
 
-    assert_output(/\ACCL: .+^Turista: \$ 960\.56 📈 0\.35%\n\z/m) { Ambito::CLI.new([]).run }
+    assert_output(/\ABNA: .+^Turista: \$ 960\.56 📈 0\.35%\n\z/m) { Ambito::CLI.new([]).run }
   end
 
   def test_that_the_cli_prints_a_single_rate

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## About
 
-Ambito is a Ruby gem that fetches real-time USD exchange rates from Argentina's Ambito Financiero (mercados.ambito.com). Supports Oficial, Informal (Blue), MEP, CCL, Cripto, and Turista rates.
+Ambito is a Ruby gem that fetches real-time USD exchange rates from Argentina's Ambito Financiero (mercados.ambito.com). Supports Oficial, BNA, Informal (Blue), MEP, CCL, Cripto, and Turista rates.
 
 ## Commands
 

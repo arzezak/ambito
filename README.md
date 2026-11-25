@@ -48,6 +48,7 @@ ambito -d oficial   # single rate
 | Name | Key |
 |------|-----|
 | Oficial | `oficial` |
+| BNA (Banco Nación) | `bna` |
 | Informal (Blue) | `informal` |
 | MEP | `mep` |
 | CCL | `ccl` |
