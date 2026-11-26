@@ -1,7 +1,10 @@
+require "date"
 require "optparse"
 
 module Ambito
   class CLI
+    CHART_DAYS = 30
+
     def initialize(argv, now: Time.now)
       @argv = argv
       @now = now
@@ -10,7 +13,7 @@ module Ambito
     def run
       case options
       in {dollar:}
-        puts table([Ambito.rate(dollar)])
+        puts chart(dollar)
       in {version: true}
         puts Ambito::VERSION
       else
@@ -21,6 +24,12 @@ module Ambito
     end
 
     private
+
+    def chart(dollar)
+      today = @now.to_date
+
+      Chart.new(Ambito.history(dollar, from: today - CHART_DAYS, to: today), color: $stdout.tty?)
+    end
 
     def table(rates)
       Table.new(rates, now: @now, color: $stdout.tty?)

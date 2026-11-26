@@ -1,7 +1,10 @@
+require_relative "paint"
+
 module Ambito
   class Table
+    include Paint
+
     TITLES = ["", "Compra", "Venta", "Cambio", "Actualización"].freeze
-    STYLES = {dim: 2, red: 31, green: 32, yellow: 33, cyan: 36}.freeze
     GAP_WIDTH = 3
 
     BETWEEN_BUY_AND_SELL = {
@@ -87,10 +90,6 @@ module Ambito
 
     def fit(cell, column)
       cell.ljust(widths[column])
-    end
-
-    def paint(text, style)
-      color ? "\e[#{STYLES[style]}m#{text}\e[0m" : text
     end
 
     def widths

@@ -22,4 +22,11 @@ module TestHelper
       body: fixture(dollar).merge(override.transform_keys(&:to_s))
     )
   end
+
+  def stub_ambito_history(dollar, from:, to:, body: fixture("#{dollar}_history"))
+    stub_request(
+      :get,
+      "#{Ambito::Gateway::BASE_URL}#{File.dirname(Ambito::Dollar.find(dollar).endpoint)}/grafico/#{from}/#{to}"
+    ).to_return_json(body:)
+  end
 end

@@ -144,16 +144,115 @@ class TestAmbito < Minitest::Test
     assert_includes table, "\e[36m$ 945.00\e[0m \e[2m│\e[0m \e[36m$ 995.00\e[0m \e[2m│\e[0m \e[31m-4.78%\e[0m"
   end
 
-  def test_that_the_cli_prints_a_single_rate
-    stub_ambito_request :oficial
+  def test_that_it_reads_the_history_of_a_dollar
+    stub_ambito_history :bna, from: "2026-10-27", to: "2026-11-26"
 
-    assert_output(<<~OUTPUT) { Ambito::CLI.new(%w[-d oficial], now: NOW).run }
-      ┌─────────┬──────────┬──────────┬────────┬───────────────┐
-      │         │ Compra   │ Venta    │ Cambio │ Actualización │
-      ├─────────┼──────────┼──────────┼────────┼───────────────┤
-      │ Oficial │ $ 355.38 │ $ 375.38 │ +0.23% │ hace 1 h      │
-      └─────────┴──────────┴──────────┴────────┴───────────────┘
-    OUTPUT
+    history = Ambito.history(:bna, from: Date.new(2026, 10, 27), to: Date.new(2026, 11, 26))
+
+    assert_equal "bna", history.dollar.name
+    assert_equal Date.new(2026, 10, 27), history.opening.date
+    assert_in_delta 1565.0, history.opening.price.quote
+    assert_equal Date.new(2026, 11, 26), history.closing.date
+    assert_in_delta 1625.0, history.closing.price.quote
+    assert_equal Date.new(2026, 11, 25), history.high.date
+    assert_equal Date.new(2026, 10, 27), history.low.date
+    assert_in_delta 60.0, history.change
+    assert_in_delta 3.83, history.variation.value, 0.01
+  end
+
+  def test_that_the_history_keeps_the_last_quote_of_a_repeated_day
+    stub_ambito_history :bna, from: "2026-10-27", to: "2026-11-26"
+
+    history = Ambito.history(:bna, from: Date.new(2026, 10, 27), to: Date.new(2026, 11, 26))
+
+    assert_equal 6, history.points.size
+    assert_in_delta 1600.0, history.points[3].price.quote
+  end
+
+  def test_that_the_history_raises_on_json_that_is_not_a_list
+    stub_ambito_history :bna, from: "2026-10-27", to: "2026-11-26", body: {}
+
+    error = assert_raises(Ambito::Error) do
+      Ambito.history(:bna, from: Date.new(2026, 10, 27), to: Date.new(2026, 11, 26))
+    end
+
+    assert_equal "BNA: unexpected response", error.message
+  end
+
+  def test_that_the_history_raises_on_a_quote_that_is_not_a_number
+    stub_ambito_history :bna, from: "2026-10-27", to: "2026-11-26", body: [%w[fecha BNA], ["27/10/2026", "N/D"]]
+
+    error = assert_raises(Ambito::Error) do
+      Ambito.history(:bna, from: Date.new(2026, 10, 27), to: Date.new(2026, 11, 26))
+    end
+
+    assert_equal "BNA: bad history in response", error.message
+  end
+
+  def test_that_the_history_raises_when_it_has_no_quotes
+    stub_ambito_history :bna, from: "2026-10-27", to: "2026-11-26", body: [%w[fecha BNA]]
+
+    error = assert_raises(Ambito::Error) do
+      Ambito.history(:bna, from: Date.new(2026, 10, 27), to: Date.new(2026, 11, 26))
+    end
+
+    assert_equal "BNA: no history in response", error.message
+  end
+
+  def test_that_the_chart_draws_the_history
+    history = Ambito::History.new(
+      dollar: Ambito::Dollar.find(:bna),
+      quotes: {Date.new(2026, 11, 1) => 100.0, Date.new(2026, 11, 8) => 107.0}
+    )
+
+    chart = Ambito::Chart.new(history, width: 4, height: 2).to_s
+
+    assert_equal <<~CHART.chomp, chart
+      BNA  01/11/2026 – 08/11/2026  +7.00%
+
+        │ $ 107.00
+        │   ⡠⠊
+        │ ⡠⠊
+        │ $ 100.00
+        └─────
+
+      Inicio: $ 100.00 (01/11)  //  Fin: $ 107.00 (08/11)
+      Máximo: $ 107.00 (08/11)  //  Mínimo: $ 100.00 (01/11)
+      Cambio: +7.00 (+7.00%)
+    CHART
+  end
+
+  def test_that_the_chart_draws_a_flat_history_on_the_bottom_row
+    history = Ambito::History.new(
+      dollar: Ambito::Dollar.find(:bna),
+      quotes: {Date.new(2026, 11, 1) => 100.0, Date.new(2026, 11, 8) => 100.0}
+    )
+
+    chart = Ambito::Chart.new(history, width: 4, height: 2).to_s
+
+    assert_includes chart, "  │\n  │ ⣀⣀⣀⣀\n"
+  end
+
+  def test_that_the_chart_colors_a_falling_history_red
+    history = Ambito::History.new(
+      dollar: Ambito::Dollar.find(:bna),
+      quotes: {Date.new(2026, 11, 1) => 100.0, Date.new(2026, 11, 8) => 93.0}
+    )
+
+    chart = Ambito::Chart.new(history, width: 4, height: 2, color: true).to_s
+
+    assert_includes chart, "\e[36mBNA\e[0m  01/11/2026 – 08/11/2026  \e[31m-7.00%\e[0m"
+    assert_includes chart, "\e[2mCambio:\e[0m \e[31m-7.00\e[0m (\e[31m-7.00%\e[0m)"
+  end
+
+  def test_that_the_cli_charts_the_last_30_days_of_a_single_dollar
+    stub_ambito_history :bna, from: "2026-10-26", to: "2026-11-25"
+
+    out, = capture_io { Ambito::CLI.new(%w[-d bna], now: NOW).run }
+
+    assert_equal 25, out.lines.size
+    assert_equal "BNA  27/10/2026 – 26/11/2026  +3.83%\n", out.lines.first
+    assert_equal "Cambio: +60.00 (+3.83%)\n", out.lines.last
   end
 
   def test_that_the_cli_prints_the_version

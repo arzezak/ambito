@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- `Ambito.history(name, from:, to:)`, the daily quotes of a dollar between two dates, as an `Ambito::History`
+- `Ambito::Chart`, which draws a `History` as a line chart with its first, last, highest and lowest quote and the change
+
+### Changed
+
+- `ambito -d DOLLAR` prints a chart of the last 30 days in place of the table with one rate
+
 ### Removed
 
 - `Rate#price` and `Rate#average`; read `value`, or `buy` and `sell`
