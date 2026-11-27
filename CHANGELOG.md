@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `ambito -d DOLLAR --from DATE --to DATE` charts the days between two dates; `--to` defaults to today and `--from` to 30 days before `--to`
+
 ## [0.6.0] - 2026-11-26
 
 ### Added

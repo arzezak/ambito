@@ -1,5 +1,6 @@
 require "date"
 require "optparse"
+require "optparse/date"
 
 module Ambito
   class CLI
@@ -12,8 +13,8 @@ module Ambito
 
     def run
       case options
-      in {dollar:}
-        puts chart(dollar)
+      in {dollar:, from:, to:}
+        puts chart(dollar, from:, to:)
       in {version: true}
         puts Ambito::VERSION
       else
@@ -25,10 +26,8 @@ module Ambito
 
     private
 
-    def chart(dollar)
-      today = @now.to_date
-
-      Chart.new(Ambito.history(dollar, from: today - CHART_DAYS, to: today), color: $stdout.tty?)
+    def chart(dollar, from:, to:)
+      Chart.new(Ambito.history(dollar, from:, to:), color: $stdout.tty?)
     end
 
     def table(rates)
@@ -36,15 +35,23 @@ module Ambito
     end
 
     def options
-      {}.tap do |parsed_options|
+      {to: @now.to_date}.tap do |parsed_options|
         OptionParser.new do |options|
-          options.on("-d", "--dollar DOLLAR", "Select the rate") do |dollar|
+          options.on("-d", "--dollar DOLLAR", "Chart one rate") do |dollar|
             parsed_options[:dollar] = dollar
+          end
+          options.on("-f", "--from DATE", Date, "First day of the chart (default: #{CHART_DAYS} days before the last)") do |date|
+            parsed_options[:from] = date
+          end
+          options.on("-t", "--to DATE", Date, "Last day of the chart (default: today)") do |date|
+            parsed_options[:to] = date
           end
           options.on("-v", "--version", "Show version") do
             parsed_options[:version] = true
           end
         end.parse(@argv)
+
+        parsed_options[:from] ||= parsed_options[:to] - CHART_DAYS
       end
     end
   end

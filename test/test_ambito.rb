@@ -255,6 +255,30 @@ class TestAmbito < Minitest::Test
     assert_equal "Cambio: +60.00 (+3.83%)\n", out.lines.last
   end
 
+  def test_that_the_cli_charts_between_two_dates
+    stub_ambito_history :bna, from: "2026-01-01", to: "2026-06-30"
+
+    out, = capture_io { Ambito::CLI.new(%w[-d bna --from 2026-01-01 --to 2026-06-30], now: NOW).run }
+
+    assert_equal 25, out.lines.size
+  end
+
+  def test_that_the_cli_charts_the_30_days_before_the_last_date
+    stub_ambito_history :bna, from: "2026-05-31", to: "2026-06-30"
+
+    out, = capture_io { Ambito::CLI.new(%w[-d bna --to 2026-06-30], now: NOW).run }
+
+    assert_equal 25, out.lines.size
+  end
+
+  def test_that_the_cli_charts_from_a_date_until_today
+    stub_ambito_history :bna, from: "2026-01-01", to: "2026-11-25"
+
+    out, = capture_io { Ambito::CLI.new(%w[-d bna --from 2026-01-01], now: NOW).run }
+
+    assert_equal 25, out.lines.size
+  end
+
   def test_that_the_cli_prints_the_version
     assert_output("#{Ambito::VERSION}\n") { Ambito::CLI.new(%w[-v]).run }
   end

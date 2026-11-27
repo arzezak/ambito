@@ -52,8 +52,9 @@ A `History` holds one quote per day, the one Ámbito charts: the sell price for 
 ### CLI
 
 ```
-ambito              # all rates
-ambito -d bna       # chart of the last 30 days of one rate
+ambito                                           # all rates
+ambito -d bna                                    # chart of the last 30 days of one rate
+ambito -d bna --from 2026-01-01 --to 2026-06-30
 ```
 
 The CLI prints a table, in colour when the output is a terminal. A rate with no buy and sell shows the value Ámbito publishes across both columns. `Actualización` is the time since Ámbito last updated the rate.
@@ -70,7 +71,7 @@ The CLI prints a table, in colour when the output is a terminal. A rate with no 
 └─────────┴───────────────────────┴────────┴───────────────┘
 ```
 
-With `-d`, the CLI prints a chart of the last 30 days.
+With `-d`, the CLI prints a chart of the last 30 days. `--from` (`-f`) and `--to` (`-t`) set the first and last day: `--to` defaults to today, and `--from` to 30 days before `--to`.
 
 ```
 BNA  27/10/2026 – 26/11/2026  +4.17%
@@ -102,15 +103,15 @@ Cambio: +65.00 (+4.17%)
 
 ## Supported Dollar Types
 
-| Name | Key |
-|------|-----|
-| Oficial | `oficial` |
-| BNA (Banco Nación) | `bna` |
-| Informal (Blue) | `informal` |
-| MEP | `mep` |
-| CCL | `ccl` |
-| Cripto | `cripto` |
-| Turista | `turista` |
+| Name               | Key        |
+| ------------------ | ---------- |
+| Oficial            | `oficial`  |
+| BNA (Banco Nación) | `bna`      |
+| Informal (Blue)    | `informal` |
+| MEP                | `mep`      |
+| CCL                | `ccl`      |
+| Cripto             | `cripto`   |
+| Turista            | `turista`  |
 
 ## License
 
